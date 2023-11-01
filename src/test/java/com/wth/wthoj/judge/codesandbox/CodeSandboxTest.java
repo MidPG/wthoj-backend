@@ -37,6 +37,23 @@ class CodeSandboxTest {
 
     }
 
+    @Test
+    void executeCodeByProxy() {
+
+        CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
+        CodeSandboxProxy codeSandboxProxy = new CodeSandboxProxy(codeSandbox);
+        String code = "int main() {}";
+        String language = "c";
+        List<String> inputList = Arrays.asList("1 2", "3  4");
+        ExecuteCodeRequest executeRequest = ExecuteCodeRequest.builder()
+                .language(language)
+                .code(code)
+                .inputList(inputList)
+                .build();
+        ExecuteCodeResponse executeCodeResponse = codeSandboxProxy.executeCode(executeRequest);
+
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 

@@ -1,9 +1,5 @@
 package com.wth.wthoj.service.impl;
 
-import java.util.List;
-
-import java.util.Date;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,34 +8,21 @@ import com.wth.wthoj.common.ErrorCode;
 import com.wth.wthoj.constant.CommonConstant;
 import com.wth.wthoj.exception.BusinessException;
 import com.wth.wthoj.exception.ThrowUtils;
-import com.wth.wthoj.model.dto.question.QuestionQueryRequest;
-import com.wth.wthoj.model.entity.*;
-import com.wth.wthoj.model.vo.QuestionVO;
-import com.wth.wthoj.model.vo.UserVO;
-import com.wth.wthoj.service.QuestionService;
 import com.wth.wthoj.mapper.QuestionMapper;
+import com.wth.wthoj.model.dto.question.QuestionQueryRequest;
+import com.wth.wthoj.model.entity.Question;
+import com.wth.wthoj.model.vo.QuestionVO;
+import com.wth.wthoj.service.QuestionService;
 import com.wth.wthoj.service.UserService;
 import com.wth.wthoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * @author 79499
@@ -56,20 +39,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     private UserService userService;
 
 
+    /**
+     *  校验题目是否合法
+     */
     @Override
     public void validQuestion(Question question, boolean add) {
 
         if (question == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-
-        Long id = question.getId();
         String title = question.getTitle();
         String content = question.getContent();
         String tags = question.getTags();
         String answer = question.getAnswer();
-        Integer submitNum = question.getSubmitNum();
-        Integer acceptNum = question.getAcceptNum();
         String judgeCase = question.getJudgeCase();
         String judgeConfig = question.getJudgeConfig();
         // 创建时，参数不能为空
@@ -83,10 +65,19 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         if (StringUtils.isNotBlank(content) && content.length() > 8192) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
         }
+        if (StringUtils.isNotBlank(answer) && answer.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "答案过长");
+        }
+        if (StringUtils.isNotBlank(judgeCase) && judgeCase.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "判题用例过长");
+        }
+        if (StringUtils.isNotBlank(judgeConfig) && judgeConfig.length() > 8192) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "判题配置过长");
+        }
     }
 
     /**
-     * 获取查询包装类
+     * 获取查询包装类(用户可能会根据哪些字段来查询，得到mybatis支持的 queryWrapper 类)
      *
      * @param questionQueryRequest
      * @return
@@ -98,7 +89,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         if (questionQueryRequest == null) {
             return queryWrapper;
         }
-
         Long id = questionQueryRequest.getId();
         String title = questionQueryRequest.getTitle();
         String content = questionQueryRequest.getContent();
@@ -106,7 +96,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         Long userId = questionQueryRequest.getUserId();
         String sortField = questionQueryRequest.getSortField();
         String sortOrder = questionQueryRequest.getSortOrder();
-
         // 拼接查询条件
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
@@ -124,8 +113,14 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         return queryWrapper;
     }
 
+
+    /**
+     *  question 转 questionVO方法
+     */
     @Override
     public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
+
+
         return null;
     }
 

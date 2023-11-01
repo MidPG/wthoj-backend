@@ -1,11 +1,18 @@
 package com.wth.wthoj.model.vo;
 
+import cn.hutool.json.JSONUtil;
+import com.google.gson.reflect.TypeToken;
+import com.wth.wthoj.model.dto.question.JudgeConfig;
+import com.wth.wthoj.model.entity.Question;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *  返回给前端展示的题目封装类
+ *  说明：不是所有的数据都要返回给前端
  */
 @Data
 public class QuestionVO {
@@ -25,7 +32,7 @@ public class QuestionVO {
     /**
      * 标签列表（json 数组）
      */
-    private String tags;
+    private List<String> tagsList;
 
     /**
      * 题目答案
@@ -46,7 +53,7 @@ public class QuestionVO {
     /**
      * 判题配置(json对象)
      */
-    private String judgeConfig;
+    private JudgeConfig judgeConfig;
 
     /**
      * 点赞数
@@ -72,5 +79,53 @@ public class QuestionVO {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     *  创题人信息
+     */
+    private UserVO userVO;
+
+    /**
+     *  vo类 转  Bean
+     */
+    public static Question voToObj(QuestionVO questionVO) {
+        if (questionVO == null) {
+            return null;
+        }
+        Question question = new Question();
+        BeanUtils.copyProperties(questionVO, question);
+        List<String> tagList = questionVO.getTagsList();
+        if (tagList != null) {
+            question.setTags(JSONUtil.toJsonStr(tagList));
+        }
+        JudgeConfig voJudgeConfig = questionVO.getJudgeConfig();
+        if (voJudgeConfig != null) {
+            question.setJudgeCase(JSONUtil.toJsonStr(voJudgeConfig));
+        }
+        return question;
+    }
+
+    /**
+     *  Bean 转 vo类
+     */
+    public static QuestionVO objToVo(Question question) {
+        if (question == null) {
+            return null;
+        }
+        QuestionVO questionVO = new QuestionVO();
+        String judgeConfig = question.getJudgeConfig();
+        String tags = question.getTags();
+        if (judgeConfig != null) {
+            questionVO.setJudgeConfig(JSONUtil.toBean(judgeConfig, JudgeConfig.class));
+        }
+        List<String> tagList = null;
+        if (tags != null) {
+            questionVO.setTagsList(JSONUtil.toList(tags, String.class));
+        }
+        questionVO.setTagsList(tagList);
+        BeanUtils.copyProperties(question, questionVO);
+        return questionVO;
+    } 
+    
 
 }
