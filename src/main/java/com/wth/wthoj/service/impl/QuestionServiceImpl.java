@@ -11,7 +11,9 @@ import com.wth.wthoj.exception.ThrowUtils;
 import com.wth.wthoj.mapper.QuestionMapper;
 import com.wth.wthoj.model.dto.question.QuestionQueryRequest;
 import com.wth.wthoj.model.entity.Question;
+import com.wth.wthoj.model.entity.User;
 import com.wth.wthoj.model.vo.QuestionVO;
+import com.wth.wthoj.model.vo.UserVO;
 import com.wth.wthoj.service.QuestionService;
 import com.wth.wthoj.service.UserService;
 import com.wth.wthoj.utils.SqlUtils;
@@ -25,9 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * @author 79499
- * @description 针对表【question(题目)】的数据库操作Service实现
- * @createDate 2023-10-28 17:30:09
+ * 针对表【question(题目)】的数据库操作Service实现
  */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
@@ -78,9 +78,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     /**
      * 获取查询包装类(用户可能会根据哪些字段来查询，得到mybatis支持的 queryWrapper 类)
-     *
-     * @param questionQueryRequest
-     * @return
      */
     @Override
     public QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest) {
@@ -119,31 +116,23 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
      */
     @Override
     public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
-
-
-        return null;
+        QuestionVO questionVO = QuestionVO.objToVo(question);
+        // 关联一下出题人信息
+        Long userId = question.getUserId();
+        User user = null;
+        if (userId != null && userId > 0) {
+            user = userService.getById(userId);
+        }
+        UserVO userVO = userService.getUserVO(user);
+        questionVO.setUserVO(userVO);
+        return questionVO;
     }
 
     @Override
     public Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request) {
+
         return null;
     }
-
-//    @Override
-//    public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
-//        QuestionVO questionVO = QuestionVO.objToVo(question);
-//        long questionId = question.getId();
-//        // 1. 关联查询用户信息
-//        Long userId = question.getUserId();
-//        User user = null;
-//        if (userId != null && userId > 0) {
-//            user = userService.getById(userId);
-//        }
-//        UserVO userVO = userService.getUserVO(user);
-//        // 2. 已登录，获取用户点赞、收藏状态
-//        User loginUser = userService.getLoginUserPermitNull(request);
-//        return questionVO;
-//    }
 
 
 }

@@ -113,6 +113,8 @@ public class QuestionVO {
             return null;
         }
         QuestionVO questionVO = new QuestionVO();
+        BeanUtils.copyProperties(question, questionVO);
+
         String judgeConfig = question.getJudgeConfig();
         String tags = question.getTags();
         if (judgeConfig != null) {
@@ -122,8 +124,7 @@ public class QuestionVO {
         if (tags != null) {
             questionVO.setTagsList(JSONUtil.toList(tags, String.class));
         }
-        questionVO.setTagsList(tagList);
-        BeanUtils.copyProperties(question, questionVO);
+
         return questionVO;
     } 
     

@@ -9,7 +9,6 @@ import com.wth.wthoj.judge.codesandbox.model.ExecuteCodeResponse;
  */
 public class ExampleCodeSandbox implements CodeSandbox {
 
-
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
         System.out.println("使用默认代码沙箱");

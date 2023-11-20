@@ -19,12 +19,11 @@ public class CodeSandboxProxy implements CodeSandbox{
 
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
+
         log.info("代码沙箱请求信息");
         ExecuteCodeResponse executeCodeResponse = codeSandbox.executeCode(executeCodeRequest);
         log.info("代码沙箱相应信息");
         return executeCodeResponse;
-
-
 
     }
 

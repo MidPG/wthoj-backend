@@ -23,11 +23,11 @@ public class ExecuteCodeResponse {
      */
     private String message;
 
-
     /**
      *  执行状态
      */
     private Integer status;
+
 
     /**
      *  判题信息

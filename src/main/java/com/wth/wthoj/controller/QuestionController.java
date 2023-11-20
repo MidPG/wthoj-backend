@@ -1,5 +1,6 @@
 package com.wth.wthoj.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.wth.wthoj.annotation.AuthCheck;
@@ -10,10 +11,7 @@ import com.wth.wthoj.common.ResultUtils;
 import com.wth.wthoj.constant.UserConstant;
 import com.wth.wthoj.exception.BusinessException;
 import com.wth.wthoj.exception.ThrowUtils;
-import com.wth.wthoj.model.dto.question.QuestionAddRequest;
-import com.wth.wthoj.model.dto.question.QuestionEditRequest;
-import com.wth.wthoj.model.dto.question.QuestionQueryRequest;
-import com.wth.wthoj.model.dto.question.QuestionUpdateRequest;
+import com.wth.wthoj.model.dto.question.*;
 import com.wth.wthoj.model.entity.Question;
 import com.wth.wthoj.model.entity.User;
 import com.wth.wthoj.model.vo.QuestionVO;
@@ -66,6 +64,14 @@ public class QuestionController {
         List<String> tags = questionAddRequest.getTags();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
+        JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
+        if (judgeCase != null) {
+            question.setJudgeCase(GSON.toJson(tags));
+        }
+        if (judgeConfig != null) {
+            question.setJudgeConfig(GSON.toJson(tags));
         }
         questionService.validQuestion(question, true);
         User loginUser = userService.getLoginUser(request);
@@ -121,6 +127,14 @@ public class QuestionController {
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
         }
+        List<JudgeCase> judgeCase = questionUpdateRequest.getJudgeCase();
+        JudgeConfig judgeConfig = questionUpdateRequest.getJudgeConfig();
+        if (judgeCase != null) {
+            question.setJudgeCase(GSON.toJson(tags));
+        }
+        if (judgeConfig != null) {
+            question.setJudgeConfig(GSON.toJson(tags));
+        }
         // 参数校验
         questionService.validQuestion(question, false);
         long id = questionUpdateRequest.getId();
@@ -146,7 +160,8 @@ public class QuestionController {
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        return ResultUtils.success(questionService.getQuestionVO(question, request));
+        QuestionVO questionVO = questionService.getQuestionVO(question, request);
+        return ResultUtils.success(questionVO);
     }
 
     /**
@@ -207,8 +222,16 @@ public class QuestionController {
         Question question = new Question();
         BeanUtils.copyProperties(questionEditRequest, question);
         List<String> tags = questionEditRequest.getTags();
+        List<JudgeCase> judgeCase = questionEditRequest.getJudgeCase();
+        JudgeConfig judgeConfig = questionEditRequest.getJudgeConfig();
         if (tags != null) {
             question.setTags(GSON.toJson(tags));
+        }
+        if (judgeConfig != null) {
+            question.setJudgeConfig(JSONUtil.toJsonStr(judgeConfig));
+        }
+        if (judgeCase != null) {
+            question.setJudgeCase(JSONUtil.toJsonStr(judgeCase));
         }
         // 参数校验
         questionService.validQuestion(question, false);

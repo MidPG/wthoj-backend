@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- *
+ *  提交代码请求对象
  */
 @Data
 @Builder

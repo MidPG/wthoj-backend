@@ -1,25 +1,47 @@
 package com.wth.wthoj;
 
-import com.wth.wthoj.config.WxOpenConfig;
 import javax.annotation.Resource;
+
+import com.rabbitmq.client.ConnectionFactory;
+import com.wth.wthoj.mq.MessageConsumer;
+import com.wth.wthoj.mq.MessageProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * 主类测试
  *
- * @author <a href="https://github.com/liwth">程序员鱼皮</a>
- * @from <a href="https://wth.icu">编程导航知识星球</a>
  */
 @SpringBootTest
 class MainApplicationTests {
 
     @Resource
-    private WxOpenConfig wxOpenConfig;
+    private MessageProducer messageProducer;
 
-    @Test
-    void contextLoads() {
-        System.out.println(wxOpenConfig);
-    }
+    @Resource
+    private MessageConsumer messageConsumer;
+
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

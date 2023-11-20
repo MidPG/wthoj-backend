@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * MyBatis Plus 配置
  *
- * @author https://github.com/liwth
  */
 @Configuration
 @MapperScan("com.wth.wthoj.mapper")

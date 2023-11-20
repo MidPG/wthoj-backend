@@ -1,25 +1,26 @@
 package com.wth.wthoj.model.enums;
 
+
+import cn.hutool.core.util.ObjectUtil;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
- * 文件上传业务类型枚举
- *
- * @author <a href="https://github.com/liwth">程序员鱼皮</a>
- * @from <a href="https://wth.icu">编程导航知识星球</a>
+ *  语言 提交枚举值
  */
-public enum FileUploadBizEnum {
+public enum QuestionSubmitLanguageEnum {
 
-    USER_AVATAR("用户头像", "user_avatar");
+    JAVA("java", "java"),
+    CPLUSPLUS("c++", "c++"),
+    GOLANG("golang", "golang");
 
     private final String text;
 
     private final String value;
 
-    FileUploadBizEnum(String text, String value) {
+    QuestionSubmitLanguageEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -35,16 +36,13 @@ public enum FileUploadBizEnum {
 
     /**
      * 根据 value 获取枚举
-     *
-     * @param value
-     * @return
      */
-    public static FileUploadBizEnum getEnumByValue(String value) {
-        if (ObjectUtils.isEmpty(value)) {
+    public static QuestionSubmitLanguageEnum getEnumByValue(String value) {
+        if (ObjectUtil.isEmpty(value)) {
             return null;
         }
-        for (FileUploadBizEnum anEnum : FileUploadBizEnum.values()) {
-            if (anEnum.value.equals(value)) {
+        for (QuestionSubmitLanguageEnum anEnum : QuestionSubmitLanguageEnum.values()) {
+            if (anEnum.value.equals(value)){
                 return anEnum;
             }
         }
@@ -58,4 +56,5 @@ public enum FileUploadBizEnum {
     public String getText() {
         return text;
     }
+
 }
